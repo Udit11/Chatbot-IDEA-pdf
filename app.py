@@ -1,6 +1,6 @@
 import streamlit as st
 import fitz  # PyMuPDF for PDF parsing
-import os
+import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
@@ -12,10 +12,16 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 MODEL_NAME = "gpt2"  # Replace with your preferred local model
 
 def load_huggingface_llm(model_name):
-    """Load a local HuggingFace model for text generation."""
+    """Load a local HuggingFace model for text generation with optimizations."""
     try:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+
+        if torch.cuda.is_available():
+            model = model.half().cuda()  # Load model in half precision
+        else:
+            model = model.float()  # Use float precision if CUDA is unavailable
+
         pipe = pipeline(
             "text-generation",
             model=model,
@@ -30,12 +36,11 @@ def load_huggingface_llm(model_name):
         return None
 
 def extract_text_from_pdf(pdf_file):
-    """Extract text from a PDF file."""
+    """Extract text from a PDF file efficiently."""
     try:
-        # Read PDF as stream for compatibility with Streamlit's UploadedFile
         doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
         text = "\n".join([page.get_text("text") for page in doc])
-        return text
+        return text if text.strip() else "No readable text found in PDF."
     except Exception as e:
         st.error(f"Error extracting text from PDF: {e}")
         return ""
@@ -53,15 +58,17 @@ def create_vector_db(text):
         return None
 
 def main():
-    st.title("PDF Chatbot 📄💬 (Local AI)")
+    st.set_page_config(page_title="PDF Chatbot", layout="wide")
+    st.title("📄💬 PDF Chatbot (Local AI)")
     st.sidebar.header("Upload your PDF")
     uploaded_file = st.sidebar.file_uploader("Upload a PDF", type=["pdf"])
 
     if uploaded_file:
-        with st.spinner("Processing PDF..."):
+        with st.spinner("Processing PDF... Please wait."):
             text = extract_text_from_pdf(uploaded_file)
-            if not text:
+            if not text or text.startswith("Error"):
                 return
+
             vector_db = create_vector_db(text)
             if not vector_db:
                 return
@@ -70,20 +77,22 @@ def main():
             llm = load_huggingface_llm(MODEL_NAME)
             if not llm:
                 return
+
             try:
                 qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
-                st.success("PDF successfully processed! You can now ask questions.")
+                st.success("✅ PDF successfully processed! You can now ask questions.")
             except Exception as e:
                 st.error(f"Error setting up QA chain: {e}")
                 return
 
         user_query = st.text_input("Ask something about the document:")
         if user_query:
-            try:
-                response = qa_chain.run(user_query)
-                st.write("**Answer:**", response)
-            except Exception as e:
-                st.error(f"Error generating response: {e}")
+            with st.spinner("Generating response..."):
+                try:
+                    response = qa_chain.run(user_query)
+                    st.write("**Answer:**", response)
+                except Exception as e:
+                    st.error(f"Error generating response: {e}")
 
 if __name__ == "__main__":
     main()
