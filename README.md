@@ -1,74 +1,75 @@
-PDF Chatbot 📚💬 (Local AI)
+# PDF Chatbot 📚💬 (Local AI)
 
-This project is a local AI-powered chatbot that allows users to upload PDFs and ask questions based on the document's content. It utilizes FAISS for vector search and a HuggingFace model for response generation.
+A streamlined, AI-powered chatbot designed for querying PDF documents locally. This application enables users to upload PDF files and interact with their contents through natural language queries.
 
-Features
+## 🔧 Key Features
 
-📚 Upload and process PDF files
+- 📚 **PDF Upload & Parsing** – Seamlessly upload and process PDF documents.
+- 💬 **AI-Powered Q&A** – Ask context-aware questions based on the document’s content.
+- ⚡ **Efficient Vector Search** – Leveraging FAISS for high-speed semantic retrieval.
+- 🤖 **Local Model Support** – Utilizes HuggingFace transformers for generating responses without requiring cloud APIs.
 
-🎮 AI-powered Q&A based on the document content
+## 🚀 Installation
 
-⚡ Fast vector search using FAISS
+1. **Clone the repository:**
 
-🔍 Supports local HuggingFace models
-
-Installation
-
-Clone the repository:
-
+```bash
 git clone https://github.com/Udit11/Chatbot-IDEA-pdf.git
 cd Chatbot-IDEA-pdf
+```
 
-Create a virtual environment (optional but recommended):
+2. **(Optional) Create and activate a virtual environment:**
 
+```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# On Unix or MacOS:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
+```
 
-Install dependencies:
+3. **Install required packages:**
 
+```bash
 pip install -r requirements.txt
+```
 
-Usage
+## 🧠 Usage
 
-Run the chatbot:
+Start the chatbot with:
 
+```bash
 streamlit run app.py
+```
 
-Upload a PDF file via the sidebar.
+- Use the sidebar to upload a PDF document.
+- Interact with the chatbot by asking questions related to the uploaded content.
 
-Ask questions about the document.
+## 📦 Dependencies
 
-Dependencies
+- Python >= 3.8
+- `streamlit`
+- `pymupdf`
+- `transformers`, `torch`
+- `faiss-cpu`
+- `langchain`
 
-Python (>=3.8)
+## 🌐 Deployment Options
 
-streamlit
+- **Local Deployment**: Follow the instructions under “Usage.”
+- **Cloud Deployment** (Streamlit Sharing, Hugging Face Spaces, etc.):
+  - Ensure `requirements.txt` includes all dependencies.
+  - Follow the respective cloud platform’s deployment instructions.
 
-pymupdf (for PDF parsing)
+## 🤝 Contributing
 
-transformers, torch
+Contributions are welcome! Fork the repository and submit a pull request with your improvements.
 
-faiss-cpu
+## 📄 License
 
-langchain
+This project is licensed under the MIT License.
 
-Deployment Guide
+---
 
-Local Deployment: Follow the usage steps above.
-
-Cloud Deployment (Streamlit Sharing, Hugging Face Spaces, etc.):
-
-Ensure requirements.txt is complete.
-
-Deploy using Streamlit’s cloud services.
-
-Contributing
-
-Feel free to fork the repo and submit PRs.
-
-License
-
-MIT License.
-
-Author: Udit Srivastava
-
+**Author**: Udit Srivastava  
+GitHub: [Udit11](https://github.com/Udit11)
