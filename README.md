@@ -1,4 +1,4 @@
-# PDF Chatbot 📚💬 (Local AI)
+# Chatbot IDEA PDF 📚💬 (Local AI)
 
 A streamlined, AI-powered chatbot designed for querying PDF documents locally. This application enables users to upload PDF files and interact with their contents through natural language queries.
 
